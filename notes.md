@@ -7,6 +7,9 @@ quant = entry >> 10
 
 
 
+# heartscales
+ 0x33011a04
+
 
 # Island scan
   iVar1 = *(int *)(*(int *)(iVar1 + 0x24) + 4);

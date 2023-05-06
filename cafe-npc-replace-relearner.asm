@@ -1,7 +1,7 @@
 .3ds
 
 .open "code.bin", 0x100000
-.org 0x5b9ff0
+.org 0x5b9fa0
   detour:
     push {r2}
 
@@ -26,5 +26,6 @@
     b hook+4
 
 .org 0x39a044
+  hook:
   b detour
 .close
