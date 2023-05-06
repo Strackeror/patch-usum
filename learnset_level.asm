@@ -1,37 +1,45 @@
-##poke 0x5b9d00
-.word 0
+.3ds
 
-##inithook 0x441654
-b initdetour
+.open "code.bin", 0x100000
+.org 0x441654
+  inithook:
+  b initdetour
 
-##initdetour 0x5b9d10
-push {r4,r5,r6,r7,r8,r9,lr}
-ldr r4, =poke
-str r1, [r4]
-b inithook+4
+.org 0x4417d8
+  checkhook:
+  b checkdetour
 
 
-##hook 0x4417d8
-b detour
+.org 0x5b9d00
+  poke_ptr:
+    .skip 4
 
-##detour 0x5b9d40
-.equ skip_addr, 0x4418c4
-.equ get_level, 0x3238c0
+  initdetour:
+    push {r4, r5, r6, r7, r8, r9, lr}
+    ldr r4, =poke_ptr
+    str r1, [r4]
+    b inithook + 4
 
-push {r0, r1, r2, r3, r4, lr}
-mov r4, r0
-ldr r0, =poke
-ldr r0, [r0]
-bl get_level
-cmp r0, r4
-blt skip
-b trampoline
+  checkdetour:
+    @@skip_addr equ 0x4418c4
+    @@get_level equ 0x3238c0
 
-skip:
-pop {r0, r1, r2, r3, r4, lr}
-b skip_addr
+    push {r0, r1, r2, r3, r4, lr}
+    mov r4, r0
+    ldr r0, =poke_ptr
+    ldr r0, [r0]
+    bl @@get_level
+    cmp r0, r4
+    blt @@skip
+    b @@trampoline
 
-trampoline:
-pop {r0, r1, r2, r3, r4, lr}
-cmp r0, #2
-b hook+4
+    @@skip:
+    pop {r0, r1, r2, r3, r4, lr}
+    b @@skip_addr
+
+    @@trampoline:
+    pop {r0, r1, r2, r3, r4, lr}
+    cmp r0, #2
+    b checkhook+4
+  .pool
+.close
