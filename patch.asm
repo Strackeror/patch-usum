@@ -1,12 +1,6 @@
 ##detour 0x5b99f0
 push {r2}
 
-# Check KoniKoni Restaurant
-mov r2, 0xc600
-add r2, 0x66
-cmp r1, r2
-beq override_npc
-
 # Check Pokecenter Cafe
 mov r2, #0x1400
 add r2, #0xaa
@@ -17,10 +11,6 @@ add r2, 0xb7
 cmp r1, r2
 bgt trampoline
 b override_move_relearner
-
-override_npc:
-mov r1, 0x1
-b trampoline
 
 override_move_relearner:
 mov r1, #0x1500
